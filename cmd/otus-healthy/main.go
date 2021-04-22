@@ -1,22 +1,20 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"os"
 )
 
 func main() {
-	httpPort := flag.String("http-port", "8000", "--http-port=8000")
-	flag.Parse()
-
-	if *httpPort == "" {
-		logrus.Fatal("http-port is not specified")
+	httpPort := os.Getenv("LISTEN")
+	if httpPort == "" {
+		logrus.Fatal("LISTEN env is not set")
 		return
 	}
 
-	server := NewServer(fmt.Sprintf(":%s", *httpPort))
+	server := NewServer(fmt.Sprintf(":%s", httpPort))
 
-	logrus.Infof("HTTP server started and listening on: '%s' port", *httpPort)
+	logrus.Infof("HTTP server started and listening on: '%s' port", httpPort)
 	logrus.Fatal(server.ListenAndServe())
 }
